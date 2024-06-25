@@ -56,4 +56,61 @@ describe('template spec', () => {
     cy.get('.todo-list li')
       .should('have.length', 2);
   });
+
+  // Meus testes
+  it('Verifica edição de to-do', () => {
+    cy.visit('http://127.0.0.1:7001'); 
+
+    cy.get('.new-todo')
+      .type('Teste1{enter}');
+
+    // Ensure the to-do item is added
+    cy.get('.todo-list li')
+    .should('have.length', 1)
+      .first()
+      .should('have.text', 'Teste1');
+
+    // Double-click the to-do item to edit it
+    cy.get('.todo-list li')
+      .first()
+      .dblclick();
+
+    // Edit the to-do item and press Enter
+    cy.get('.todo-list li .edit')
+      .clear()
+      .type('Teste2{enter}');
+
+    cy.get('.todo-list li')
+      .should('have.length', 1) 
+      .first()
+      .should('have.text', 'Teste2'); 
+  })
+
+  it('Verifica clear completed', () => {
+    cy.visit('http://127.0.0.1:7001'); 
+
+    cy.get('.new-todo')
+      .type('Teste 1{enter}')
+      .type('Teste 2{enter}');
+
+    cy.get('.todo-list li .toggle')
+      .check();
+
+    cy.contains('Clear completed').click();
+    cy.get('.todo-list li')
+      .should('have.length', 0);
+  })
+
+  it('Verifica dados somem após recarregar a página', () => {
+    cy.visit('http://127.0.0.1:7001'); 
+
+    cy.get('.new-todo')
+      .type('Persistência de dados{enter}');
+
+    cy.reload();
+
+    cy.get('.todo-list li')
+      .should('have.length', 0);
+  })
 });
+
